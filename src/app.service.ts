@@ -1,14 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import fs from 'fs';
+import db from './utils/firestoreAdmin';
+import screenshot from './utils/screenshot';
+import { CourseInterface } from './interfaces/CourseInterface';
+import generateString from './utils/generateString';
 
 @Injectable()
 export class AppService {
   getHello(): string {
     return 'KU Table Api';
   }
-  getScreenshot(id: string): string {
-    console.log(id);
+  async getScreenshot(body: CourseInterface[]): Promise<string | Buffer> {
+    const link = generateString();
 
-    return 'KU Table Api';
+    await db.collection('links').doc(link).set({
+      link: link,
+      courseData: body,
+    });
+
+    const pngBuffer = await screenshot(
+      `https://ku-table2.vercel.app/screenshot/${link}`,
+      3,
+    );
+    
+    await db.collection('links').doc(link).delete();
+
+    return pngBuffer;
   }
 }

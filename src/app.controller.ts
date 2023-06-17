@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import screenshot from './utils/screenshot';
 import { Response } from 'express';
-
+import db from './utils/firestoreAdmin';
+import { CourseInterface } from './interfaces/CourseInterface';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -12,19 +13,16 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/screenshot/:id')
+  @Post('/screenshot')
   async getScreenshot(
     @Res() res: Response,
-    @Param('id') id: string,
+    @Body() body: CourseInterface[],
   ): Promise<void> {
-    // Generate the PNG buffer (replace with your own logic)
-    const pngBuffer = await screenshot('https://www.google.com/');
-
-    // Set the appropriate headers for the response
-    res.setHeader('Content-Type', 'image/png');
-    res.setHeader('Content-Disposition', `attachment; filename=${id}.png`);
-
-    // Send the PNG buffer as the response
-    res.send(pngBuffer);
+    res.setHeader('Content-Type', `image/png`);
+    res.setHeader(
+      'Cache-Control',
+      `public, immutable, no-transform, s-maxage=31536000, max-age=31536000`,
+    );
+    res.send(await this.appService.getScreenshot(body));
   }
 }
