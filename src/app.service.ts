@@ -17,7 +17,7 @@ export class AppService {
 
     await db.collection('links').doc(link).set({
       link: link,
-      courseData: body,
+      courseData: body.courses,
     });
 
     const pngBuffer = await screenshot(
