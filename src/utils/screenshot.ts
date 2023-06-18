@@ -9,10 +9,8 @@ export default async function screenshot(
 ) {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    // executablePath:
-    //   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    executablePath:
-      '/usr/bin/google-chrome',
+    // executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    executablePath: '/usr/bin/google-chrome',
   });
   const page = await browser.newPage();
   await page.setViewport({
@@ -24,6 +22,7 @@ export default async function screenshot(
 
   await page.waitForSelector('.flex-col.bg-base-100');
   const logo = await page.$('.flex-col.bg-base-100');
-
-  return await logo?.screenshot({ type: 'png' });
+  const image = await logo?.screenshot({ type: 'png' });
+  await browser.close();
+  return image;
 }
