@@ -16,13 +16,21 @@ export class AppController {
   @Post('/screenshot')
   async getScreenshot(
     @Res() res: Response,
-    @Body() body: CourseInterface[],
+    @Body() body: {
+        courses: CourseInterface[];
+        theme: string;
+    },
   ): Promise<void> {
     res.setHeader('Content-Type', `image/png`);
     res.setHeader(
       'Cache-Control',
       `public, immutable, no-transform, s-maxage=31536000, max-age=31536000`,
     );
-    res.send(await this.appService.getScreenshot(body));
+    res.send(
+      await this.appService.getScreenshot({
+        courses: body.courses,
+        theme: body.theme || 'light',
+      }),
+    );
   }
 }

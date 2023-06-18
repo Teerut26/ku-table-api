@@ -9,7 +9,10 @@ export class AppService {
   getHello(): string {
     return 'KU Table Api';
   }
-  async getScreenshot(body: CourseInterface[]): Promise<string | Buffer> {
+  async getScreenshot(body: {
+    courses: CourseInterface[];
+    theme: string;
+  }): Promise<string | Buffer> {
     const link = generateString();
 
     await db.collection('links').doc(link).set({
@@ -21,7 +24,7 @@ export class AppService {
       `https://ku-table2.vercel.app/screenshot/${link}`,
       3,
     );
-    
+
     await db.collection('links').doc(link).delete();
 
     return pngBuffer;
