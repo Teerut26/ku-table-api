@@ -21,7 +21,7 @@ export class AppService {
     });
 
     const pngBuffer = await screenshot(
-      `https://ku-table2.vercel.app/screenshot/${link}`,
+      `https://ku-table2.vercel.app/screenshot/${link}?theme=${body.theme}`,
       3,
     );
 
